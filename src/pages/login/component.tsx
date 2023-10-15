@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { InputText } from '../../components/input-text';
 
 import './styles.css';
@@ -14,7 +14,6 @@ export const Login: React.FC = () => {
     const [userPass1, setUserPass1] = useState<string>('')
     const [userPass2, setUserPass2] = useState<string>('')
     const [isDisableReg, setDisableReg] = useState<boolean>(true)
-    const [isDisableAuth, setDisableRegAuth] = useState<boolean>(true)
     const [isPassError, setPassError] = useState<boolean>(false)
     const [isEmailError, setEmailError] = useState<boolean>(false)
 
@@ -32,20 +31,30 @@ export const Login: React.FC = () => {
     }
 
     const handleChangePass1 = (event: any) => {
-        if (userPass2 !== event.target.value) {
+        let regexp = /[^a-z]/gi
+        let value = event.target.value;
+        value = value.replace(regexp, '');
+
+
+        if (userPass2 !== value) {
             setPassError(true)
             if (!isEmailError) {
                 setDisableReg(false)
             }
-
         } else {
             setDisableReg(true)
             setPassError(false)
         }
-        setUserPass1(event.target.value)
+
+        setUserPass1(value)
     }
 
     const handleChangePass2 = (event: any) => {
+        let regexp = /[^a-z]/gi
+        let value = event.target.value;
+        value = value.replace(regexp, '');
+
+
         if (userPass1 !== event.target.value) {
             setPassError(true)
             if (!isEmailError) {
@@ -55,7 +64,8 @@ export const Login: React.FC = () => {
             setDisableReg(true)
             setPassError(false)
         }
-        setUserPass2(event.target.value)
+
+        setUserPass2(value)
     }
 
     const handleClickSign = () => {
@@ -70,15 +80,16 @@ export const Login: React.FC = () => {
     }
 
     const handleChangeEmail = (e: any) => {
+        setUserEmail(e.target.value)
+
         if (e.target.value.includes('@', 1)) {
-            setUserEmail(e.target.value)
             setEmailError(false)
             if (!isPassError) {
                 setDisableReg(true)
             }
         } else {
-            setDisableReg(false)
-            setEmailError(true)
+                setDisableReg(false)
+                setEmailError(true)
         }
     }
 
@@ -127,17 +138,24 @@ export const Login: React.FC = () => {
                             placeholder="Введите логин"
                             value={userLogin}
                         />
-                        <InputText type="email" onChange={(event: any) => handleChangeEmail(event)} placeholder="Введите Email" />
+                        <InputText
+                            type="email"
+                            onChange={(event: any) => handleChangeEmail(event)}
+                            placeholder="Введите Email"
+                            value={userEmail}
+                        />
                         {isEmailError && <div style={{ color: 'red' }}>Email должен содержать символ @</div>}
                         <InputText
-                            type="text"
+                            type="password"
                             placeholder="Введите пароль"
                             onChange={(event: any) => handleChangePass1(event)}
+                            value={userPass1}
                         />
                         <InputText
-                            type="text"
+                            type="password"
                             placeholder="Введите пароль повторно"
                             onChange={(event: any) => handleChangePass2(event)}
+                            value={userPass2}
                         />
                         {isPassError && <div style={{ color: 'red' }}>Пароли не совпадают</div>}
                         <button
@@ -155,7 +173,8 @@ export const Login: React.FC = () => {
                             onChange={(e: any) => handleChangeLoginAuth(e)}
                             value={userLoginAuth}
                         />
-                        <InputText type="password"
+                        <InputText
+                            type="password"
                             placeholder="Password"
                             onChange={(e: any) => handleChangePassAuth(e)}
                             value={userPassAuth}
