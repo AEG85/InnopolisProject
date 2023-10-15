@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import picture from '../../assets/images/pumps.png';
+// import picture from '../../assets/images/pumps.png';
 
 export const About: React.FC = () => {
     return (
@@ -17,7 +17,7 @@ export const About: React.FC = () => {
                     <Link to="/place" className="btn btn-secondary mt-4 py-3 px-5">Попробовать</Link>
                 </div>
                 <div className="col-lg-6 text-center text-lg-right mb-5">
-                    <img className="img-fluid" src={picture} alt="" />
+                    {/* <img className="img-fluid" src={picture} alt="" /> */}
                 </div>
             </div>
         </div>
