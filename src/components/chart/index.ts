@@ -1,0 +1,1 @@
+import CastomChart from "./component"

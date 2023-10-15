@@ -4,7 +4,7 @@ import { InputText } from '../../components/input-text';
 import './styles.css';
 
 
-export const Login = () => {
+export const Login: React.FC = () => {
 
     const [isSign, setSign] = useState<boolean>(false)
     const [userLoginAuth, setUserLoginAuth] = useState<string>('')
@@ -13,26 +13,49 @@ export const Login = () => {
     const [userEmail, setUserEmail] = useState<string>('')
     const [userPass1, setUserPass1] = useState<string>('')
     const [userPass2, setUserPass2] = useState<string>('')
+    const [isDisableReg, setDisableReg] = useState<boolean>(true)
+    const [isDisableAuth, setDisableRegAuth] = useState<boolean>(true)
     const [isPassError, setPassError] = useState<boolean>(false)
-
+    const [isEmailError, setEmailError] = useState<boolean>(false)
 
     const handleChangeLoginAuth = (event: any) => {
-        setUserLoginAuth(event.target.value)
+        let regexp = /[^a-zA-Z0-9]/gi
+        let value = event.target.value;
+        value = value.replace(regexp, '');
+        setUserLoginAuth(value)
     }
     const handleChangePassAuth = (event: any) => {
-        setUserPassAuth(event.target.value)
+        let regexp = /[^a-z]/gi
+        let value = event.target.value;
+        value = value.replace(regexp, '');
+        setUserPassAuth(value);
     }
 
     const handleChangePass1 = (event: any) => {
+        if (userPass2 !== event.target.value) {
+            setPassError(true)
+            if (!isEmailError) {
+                setDisableReg(false)
+            }
+
+        } else {
+            setDisableReg(true)
+            setPassError(false)
+        }
         setUserPass1(event.target.value)
     }
 
     const handleChangePass2 = (event: any) => {
         if (userPass1 !== event.target.value) {
             setPassError(true)
+            if (!isEmailError) {
+                setDisableReg(false)
+            }
         } else {
+            setDisableReg(true)
             setPassError(false)
         }
+        setUserPass2(event.target.value)
     }
 
     const handleClickSign = () => {
@@ -40,12 +63,24 @@ export const Login = () => {
     }
 
     const handleChangeLogin = (e: any) => {
-        setUserLogin(e.target.value)
-    }
-    const handleChangeEmail = (e: any) => {
-        setUserEmail(e.target.value)
+        let regexp = /[^a-zA-Z0-9]/gi
+        let value = e.target.value;
+        value = value.replace(regexp, '');
+        setUserLogin(value)
     }
 
+    const handleChangeEmail = (e: any) => {
+        if (e.target.value.includes('@', 1)) {
+            setUserEmail(e.target.value)
+            setEmailError(false)
+            if (!isPassError) {
+                setDisableReg(true)
+            }
+        } else {
+            setDisableReg(false)
+            setEmailError(true)
+        }
+    }
 
     const handleClickLogin = () => {
         fetch("http://localhost:4040/login", {
@@ -72,12 +107,28 @@ export const Login = () => {
 
     return (
         <>
+            <div className="container-fluid bg-primary px-0 px-md-5 mb-5">
+                <div className="row align-items-center px-3 py-5">
+                    <div className="col-lg-12 text-center text-lg-left">
+                        <h1 className="display-3 font-weight-bold text-white text-center">
+                            Авторизация / Регистрация
+                        </h1>
+                    </div>
+                </div>
+            </div>
+
+
             <div className={rightPanelActive} id="container">
                 <div className="form-container sign-up-container">
                     <form action="#">
-                        <h1>Соаздайте пользователя</h1>
-                        <InputText type="text" onChange={(event: any) => handleChangeLogin(event)} placeholder="Введите логин" />
+                        <h1>Создайте профиль</h1>
+                        <InputText type="text"
+                            onChange={(event: any) => handleChangeLogin(event)}
+                            placeholder="Введите логин"
+                            value={userLogin}
+                        />
                         <InputText type="email" onChange={(event: any) => handleChangeEmail(event)} placeholder="Введите Email" />
+                        {isEmailError && <div style={{ color: 'red' }}>Email должен содержать символ @</div>}
                         <InputText
                             type="text"
                             placeholder="Введите пароль"
@@ -90,6 +141,7 @@ export const Login = () => {
                         />
                         {isPassError && <div style={{ color: 'red' }}>Пароли не совпадают</div>}
                         <button
+                            disabled={!isDisableReg}
                             onClick={handleClickLogin}
                         >Регистрация</button>
                     </form>
@@ -103,10 +155,10 @@ export const Login = () => {
                             onChange={(e: any) => handleChangeLoginAuth(e)}
                             value={userLoginAuth}
                         />
-                        <InputText type="password" 
-                        placeholder="Password" 
-                        onChange={(e: any) => handleChangePassAuth(e)}
-                        value={userPassAuth}
+                        <InputText type="password"
+                            placeholder="Password"
+                            onChange={(e: any) => handleChangePassAuth(e)}
+                            value={userPassAuth}
                         />
                         <button
                             onClick={handleClickAuth}

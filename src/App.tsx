@@ -1,73 +1,98 @@
 import React from 'react'
 import { Link, Routes, Route, NavLink } from 'react-router-dom'
-import './App.css';
-// import { Login } from './pages'
+// import './App.css';
+import './assets/css/main-style.css'
+import useScript from './hooks/useScript';
 
-import { About, Contacts, EventsCatalog, Main, NotFound } from './pages'
-import { RequireAuth } from './hocs/requireAuth'
+import { About, Place, Login, NotFound } from './pages'
 
 const ROUTES = {
-  main: '/',
-  catalog: '/catalog',
-  about: '/about',
-  contacts: '/contacts'
+  about: '/',
+  place: '/place',
+  login: '/login'
+}
+
+const logo = {
+  fontSize: '50px',
+}
+
+const footer = {
+  borderTop: '1px solid rgba(23, 162, 184, 0.2)'
 }
 
 function App() {
+  useScript('https://cdn.jsdelivr.net/npm/chart.js')
+  
   return (
-    <div className="App">
-      <header className="App-header1">
-        <div>logo</div>
-        <nav>
-          <ul>
-            <li><NavLink to={ROUTES.main} style={({ isActive }) => ({ color: isActive ? "green" : "dark" })}> Главная</NavLink></li>
-            <li><NavLink to={ROUTES.catalog} style={({ isActive }) => ({ color: isActive ? "green" : "dark" })}> Каталог событий</NavLink></li>
-            <li><NavLink to={ROUTES.about} style={({ isActive }) => ({ color: isActive ? "green" : "dark" })}> О проекте</NavLink></li>
-            <li><NavLink to={ROUTES.contacts} style={({ isActive }) => ({ color: isActive ? "green" : "dark" })}> Контакты</NavLink></li>
-          </ul>
+    <>
+      <div className="container-fluid bg-light position-relative shadow">
+        <nav
+          className="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0 px-lg-5"
+        >
+          <Link
+            to={ROUTES.about}
+            className="navbar-brand font-weight-bold text-secondary"
+
+          >
+            <span style={logo} className="text-primary">ЧистыйГород</span>
+          </Link>
+          <button
+            type="button"
+            className="navbar-toggler"
+            data-toggle="collapse"
+            data-target="#navbarCollapse"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div
+            className="collapse navbar-collapse justify-content-between"
+            id="navbarCollapse"
+          >
+            <div className="navbar-nav font-weight-bold mx-auto py-0">
+              <NavLink
+                to={ROUTES.about}
+                className="nav-item nav-link"
+              > О сервисе</NavLink>
+              <NavLink
+                to={ROUTES.place}
+                className="nav-item nav-link"
+              > Информация по загрязненю</NavLink>
+              <NavLink
+                to={ROUTES.login}
+                className="nav-item nav-link"
+              > Авторизация / Регистраци</NavLink>
+            </div>
+          </div>
         </nav>
-        <div>
-          <span>login / logout</span>
-          <span>IcnoIser</span>
+      </div>
+      <Routes>
+        <Route path={ROUTES.about} element={<About />}></Route>
+        <Route path={ROUTES.place} element={<Place />}></Route>
+        <Route path={ROUTES.login} element={<Login />}></Route>
+        <Route path="*" element={<NotFound />}></Route>
+      </Routes>
+      {/* Navbar End */}
+
+      {/* Footer Start */}
+      <div
+        className="container-fluid bg-secondary text-white mt-5 py-5 px-sm-3 px-md-5"
+      >
+        <div
+          className="container-fluid pt-5"
+          style={footer}
+        >
+          <p className="m-0 text-center text-white">
+            &copy;
+            <Link className="text-primary font-weight-bold" to={ROUTES.place}>Сервис анализа загрязненности местности</Link>.
+            Все права защищены.
+          </p>
         </div>
-      </header>
-      <main>
-        <Routes>
-          <Route path={ROUTES.main} element={<Main />}></Route>
-          <Route path={ROUTES.catalog} element={
-            <RequireAuth>
-              <EventsCatalog />
-            </RequireAuth>
-          }></Route>
-          <Route path={ROUTES.about} element={<About />}></Route>
-          <Route path={ROUTES.contacts} element={<Contacts />}></Route>
-          <Route path="*" element={<NotFound />}></Route>
-        </Routes>
-      </main>
-    </div >
+      </div >
+      {/* Footer End */}
 
+    </>
 
-    // <div className="rootStyle">
-    //   <Login />
-    // </div>
   );
 }
 
-export default App;
-
-{/* <div className="App">
-<header className="App-header">
-  <img src={logo} className="App-logo" alt="logo" />
-  <p>
-    Edit <code>src/App.tsx</code> and save to reload.
-  </p>
-  <a
-    className="App-link"
-    href="https://reactjs.org"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Learn React
-  </a>
-</header>
-</div> */}
+export default App

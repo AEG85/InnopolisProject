@@ -1,1 +1,0 @@
-export { EventsCatalog } from './component'
