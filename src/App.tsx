@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link, Routes, Route, NavLink } from 'react-router-dom'
-// import './App.css';
 import './assets/css/main-style.css'
 import useScript from './hooks/useScript';
 
