@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { InputText } from '../../components/input-text';
-
 import './styles.css';
 
 
