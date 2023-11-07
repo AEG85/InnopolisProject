@@ -1,98 +1,33 @@
 import React, { useState } from 'react'
-import { InputText } from '../../components/input-text';
+import { useForm } from 'react-hook-form';
 import './styles.css';
-
 
 export const Login: React.FC = () => {
 
     const [isSign, setSign] = useState<boolean>(false)
-    const [userLoginAuth, setUserLoginAuth] = useState<string>('')
-    const [userPassAuth, setUserPassAuth] = useState<string>('')
-    const [userLogin, setUserLogin] = useState<string>('')
-    const [userEmail, setUserEmail] = useState<string>('')
-    const [userPass1, setUserPass1] = useState<string>('')
-    const [userPass2, setUserPass2] = useState<string>('')
-    const [isDisableReg, setDisableReg] = useState<boolean>(true)
-    const [isPassError, setPassError] = useState<boolean>(false)
-    const [isEmailError, setEmailError] = useState<boolean>(false)
-
-    const handleChangeLoginAuth = (event: any) => {
-        let regexp = /[^a-zA-Z0-9]/gi
-        let value = event.target.value;
-        value = value.replace(regexp, '');
-        setUserLoginAuth(value)
-    }
-    const handleChangePassAuth = (event: any) => {
-        let regexp = /[^a-z]/gi
-        let value = event.target.value;
-        value = value.replace(regexp, '');
-        setUserPassAuth(value);
-    }
-
-    const handleChangePass1 = (event: any) => {
-        let regexp = /[^a-z]/gi
-        let value = event.target.value;
-        value = value.replace(regexp, '');
-
-
-        if (userPass2 !== value) {
-            setPassError(true)
-            if (!isEmailError) {
-                setDisableReg(false)
-            }
-        } else {
-            setDisableReg(true)
-            setPassError(false)
-        }
-
-        setUserPass1(value)
-    }
-
-    const handleChangePass2 = (event: any) => {
-        let regexp = /[^a-z]/gi
-        let value = event.target.value;
-        value = value.replace(regexp, '');
-
-
-        if (userPass1 !== event.target.value) {
-            setPassError(true)
-            if (!isEmailError) {
-                setDisableReg(false)
-            }
-        } else {
-            setDisableReg(true)
-            setPassError(false)
-        }
-
-        setUserPass2(value)
-    }
 
     const handleClickSign = () => {
         setSign(!isSign)
     }
 
-    const handleChangeLogin = (e: any) => {
-        let regexp = /[^a-zA-Z0-9]/gi
-        let value = e.target.value;
-        value = value.replace(regexp, '');
-        setUserLogin(value)
+    const rightPanelActive = isSign ? 'container right-panel-active' : 'container'
+
+    type FormRegistrationValues = {
+        login: string,
+        email: string,
+        password: string,
+        confirmPassword: string
     }
 
-    const handleChangeEmail = (e: any) => {
-        setUserEmail(e.target.value)
+    const {
+        register,
+        watch,
+        handleSubmit,
+        formState: { errors }
+    } = useForm<FormRegistrationValues>();
 
-        if (e.target.value.includes('@', 1)) {
-            setEmailError(false)
-            if (!isPassError) {
-                setDisableReg(true)
-            }
-        } else {
-                setDisableReg(false)
-                setEmailError(true)
-        }
-    }
-
-    const handleClickLogin = () => {
+    const onSubmit = handleSubmit((data) => {
+        console.log(data)
         fetch("http://localhost:4040/login", {
             method: "post",
             headers: {
@@ -100,20 +35,29 @@ export const Login: React.FC = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: userEmail,
-                login: userLogin,
-                password: userPass1
+                email: data.email,
+                login: data.login,
+                password: data.password
             })
         })
+    })
+
+    type FormAuthValues = {
+        loginAuth: string,
+        passwordAuth: string
     }
 
-    const handleClickAuth = () => {
-        fetch(`http://localhost:4040/user?login=${userLoginAuth}&password=${userPassAuth}`, {}).then(result => {
+    const {
+        register: registerAuth,
+        handleSubmit: handleSubmitAuth,
+        formState: { errors: errorsAuth }
+    } = useForm<FormAuthValues>();
+
+    const onSubmitAuth = handleSubmitAuth((data) => {
+        fetch(`http://localhost:4040/user?login=${data.loginAuth}&password=${data.passwordAuth}`, {}).then(result => {
             console.log(result)
         })
-    }
-
-    const rightPanelActive = isSign ? 'container right-panel-active' : 'container'
+    })
 
     return (
         <>
@@ -130,57 +74,176 @@ export const Login: React.FC = () => {
 
             <div className={rightPanelActive} id="container">
                 <div className="form-container sign-up-container">
-                    <form action="#">
+
+                    <form onSubmit={onSubmit}>
                         <h1>Создайте профиль</h1>
-                        <InputText type="text"
-                            onChange={(event: any) => handleChangeLogin(event)}
+                        <input
+                            type="text"
+                            className="p-2 w-100 mx-0 my-2"
                             placeholder="Введите логин"
-                            value={userLogin}
+                            {...register(
+                                "login",
+                                {
+                                    required: true,
+                                    minLength: 5,
+                                    maxLength: 20,
+                                    pattern: /^[A-Za-z0-9]+$/i
+                                })}
                         />
-                        <InputText
-                            type="email"
-                            onChange={(event: any) => handleChangeEmail(event)}
-                            placeholder="Введите Email"
-                            value={userEmail}
+                        <input
+                            type="text"
+                            className="p-2 w-100 mx-0 my-2"
+                            placeholder="Введите email"
+                            {...register(
+                                "email",
+                                {
+                                    required: true,
+                                    pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
+                                })}
                         />
-                        {isEmailError && <div style={{ color: 'red' }}>Email должен содержать символ @</div>}
-                        <InputText
-                            type="password"
+                        <input
+                            type="text"
+                            className="p-2 w-100 mx-0 my-2"
                             placeholder="Введите пароль"
-                            onChange={(event: any) => handleChangePass1(event)}
-                            value={userPass1}
+                            {...register(
+                                "password",
+                                {
+                                    required: true,
+                                    pattern: /^[a-z0-9_\-*]+$/i
+                                })}
                         />
-                        <InputText
-                            type="password"
-                            placeholder="Введите пароль повторно"
-                            onChange={(event: any) => handleChangePass2(event)}
-                            value={userPass2}
+                        <input
+                            type="text"
+                            className="p-2 w-100 mx-0 my-2"
+                            placeholder="Введите пароль"
+                            {...register(
+                                "confirmPassword",
+                                {
+                                    required: true,
+                                    pattern: /^[a-z0-9_\-*]+$/i,
+                                    validate: (val: string) => {
+                                        if (watch('password') !== val) {
+                                            return "пароли не совпадают"
+                                        }
+                                    }
+                                })}
                         />
-                        {isPassError && <div style={{ color: 'red' }}>Пароли не совпадают</div>}
-                        <button
-                            disabled={!isDisableReg}
-                            onClick={handleClickLogin}
-                        >Регистрация</button>
+                        <button type="submit">Регистрация</button>
+
+                        {errors.login && errors.login.type === 'minLength' && (
+                            <p className="alert p-2 border-danger border border-4 rounded-2">
+                                Минимальная длина "Логина" 5 символов.
+                            </p>
+                        )}
+                        {errors.login && errors.login.type === 'maxLength' && (
+                            <p className="alert p-2 border-danger border border-4 rounded-2">
+                                Максимальная длина "Логина" 20 символов.
+                            </p>
+                        )}
+                        {errors.login && errors.login.type === 'pattern' && (
+                            <p className="alert p-2 border-danger border border-4 rounded-2">
+                                Поле "Логин" может состоять только из английских символов плюс цифры.
+                            </p>
+                        )}
+                        {errors.login && errors.login.type === 'required' && (
+                            <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
+                                Поле "Логин" обязательное.
+                            </p>
+                        )}
+                        {errors.email && errors.email.type === 'required' && (
+                            <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
+                                Поле "Email" обязательное.
+                            </p>
+                        )}
+                        {errors.email && errors.email.type === 'pattern' && (
+                            <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
+                                Поле "Email" некорректно.
+                            </p>
+                        )}
+                        {errors.password && errors.password.type === 'required' && (
+                            <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
+                                Поле "Пароль" обязательное.
+                            </p>
+                        )}
+                        {errors.password && errors.password.type === 'pattern' && (
+                            <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
+                                Поле "Пароль" некорректно заполнено, доступы только не прописные английские буквы + <br />спец символы (_ , - , *).
+                            </p>
+                        )}
+                        {errors.confirmPassword && errors.confirmPassword.type === 'pattern' && (
+                            <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
+                                Поле "Пароль" некорректно заполнено, доступы только не прописные английские буквы + <br />спец символы (_ , - , *).
+                            </p>
+                        )}
+                        {errors.confirmPassword && errors.confirmPassword.type === 'validate' && (
+                            <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
+                                Пароли не совпадают.
+                            </p>
+                        )}
                     </form>
+
                 </div>
                 <div className="form-container sign-in-container">
-                    <form action="#">
+
+                    <form onSubmit={onSubmitAuth}>
                         <h1>Авторизация</h1>
-                        <InputText
+                        <input
                             type="text"
-                            placeholder="login"
-                            onChange={(e: any) => handleChangeLoginAuth(e)}
-                            value={userLoginAuth}
+                            className="p-2 w-100 mx-0 my-2"
+                            placeholder="Введите логин"
+                            {...registerAuth(
+                                "loginAuth",
+                                {
+                                    required: true,
+                                    minLength: 5,
+                                    maxLength: 20,
+                                    pattern: /^[A-Za-z0-9]+$/i
+                                })}
                         />
-                        <InputText
-                            type="password"
-                            placeholder="Password"
-                            onChange={(e: any) => handleChangePassAuth(e)}
-                            value={userPassAuth}
+                        <input
+                            type="text"
+                            className="p-2 w-100 mx-0 my-2"
+                            placeholder="Введите пароль"
+                            {...registerAuth(
+                                "passwordAuth",
+                                {
+                                    required: true,
+                                    pattern: /^[a-z0-9_\-*]+$/i
+                                })}
                         />
-                        <button
-                            onClick={handleClickAuth}
-                        >Авторизоваться</button>
+                        <button type="submit">Авторизоваться</button>
+
+                        {errorsAuth.loginAuth && errorsAuth.loginAuth.type === 'minLength' && (
+                            <p className="alert p-2 border-danger border border-4 rounded-2">
+                                Минимальная длина "Логина" 5 символов.
+                            </p>
+                        )}
+                        {errorsAuth.loginAuth && errorsAuth.loginAuth.type === 'maxLength' && (
+                            <p className="alert p-2 border-danger border border-4 rounded-2">
+                                Максимальная длина "Логина" 20 символов.
+                            </p>
+                        )}
+                        {errorsAuth.loginAuth && errorsAuth.loginAuth.type === 'pattern' && (
+                            <p className="alert p-2 border-danger border border-4 rounded-2">
+                                Поле "Логин" может состоять только из английских символов плюс цифры.
+                            </p>
+                        )}
+                        {errorsAuth.loginAuth && errorsAuth.loginAuth.type === 'required' && (
+                            <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
+                                Поле "Логин" обязательное.
+                            </p>
+                        )}
+                        {errorsAuth.passwordAuth && errorsAuth.passwordAuth.type === 'required' && (
+                            <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
+                                Поле "Пароль" обязательное.
+                            </p>
+                        )}
+                        {errorsAuth.passwordAuth && errorsAuth.passwordAuth.type === 'pattern' && (
+                            <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
+                                Поле "Пароль" некорректно заполнено, доступы только не прописные английские буквы + <br />спец символы (_ , - , *).
+                            </p>
+                        )}
+
                     </form>
                 </div>
                 <div className="overlay-container right-panel-active">
