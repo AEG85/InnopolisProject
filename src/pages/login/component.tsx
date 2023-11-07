@@ -90,46 +90,6 @@ export const Login: React.FC = () => {
                                     pattern: /^[A-Za-z0-9]+$/i
                                 })}
                         />
-                        <input
-                            type="text"
-                            className="p-2 w-100 mx-0 my-2"
-                            placeholder="Введите email"
-                            {...register(
-                                "email",
-                                {
-                                    required: true,
-                                    pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
-                                })}
-                        />
-                        <input
-                            type="text"
-                            className="p-2 w-100 mx-0 my-2"
-                            placeholder="Введите пароль"
-                            {...register(
-                                "password",
-                                {
-                                    required: true,
-                                    pattern: /^[a-z0-9_\-*]+$/i
-                                })}
-                        />
-                        <input
-                            type="text"
-                            className="p-2 w-100 mx-0 my-2"
-                            placeholder="Введите пароль"
-                            {...register(
-                                "confirmPassword",
-                                {
-                                    required: true,
-                                    pattern: /^[a-z0-9_\-*]+$/i,
-                                    validate: (val: string) => {
-                                        if (watch('password') !== val) {
-                                            return "пароли не совпадают"
-                                        }
-                                    }
-                                })}
-                        />
-                        <button type="submit">Регистрация</button>
-
                         {errors.login && errors.login.type === 'minLength' && (
                             <p className="alert p-2 border-danger border border-4 rounded-2">
                                 Минимальная длина "Логина" 5 символов.
@@ -150,6 +110,17 @@ export const Login: React.FC = () => {
                                 Поле "Логин" обязательное.
                             </p>
                         )}
+                        <input
+                            type="text"
+                            className="p-2 w-100 mx-0 my-2"
+                            placeholder="Введите email"
+                            {...register(
+                                "email",
+                                {
+                                    required: true,
+                                    pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
+                                })}
+                        />
                         {errors.email && errors.email.type === 'required' && (
                             <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
                                 Поле "Email" обязательное.
@@ -160,6 +131,17 @@ export const Login: React.FC = () => {
                                 Поле "Email" некорректно.
                             </p>
                         )}
+                        <input
+                            type="text"
+                            className="p-2 w-100 mx-0 my-2"
+                            placeholder="Введите пароль"
+                            {...register(
+                                "password",
+                                {
+                                    required: true,
+                                    pattern: /^[a-z0-9_\-*]+$/i
+                                })}
+                        />
                         {errors.password && errors.password.type === 'required' && (
                             <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
                                 Поле "Пароль" обязательное.
@@ -170,6 +152,22 @@ export const Login: React.FC = () => {
                                 Поле "Пароль" некорректно заполнено, доступы только не прописные английские буквы + <br />спец символы (_ , - , *).
                             </p>
                         )}
+                        <input
+                            type="text"
+                            className="p-2 w-100 mx-0 my-2"
+                            placeholder="Введите пароль"
+                            {...register(
+                                "confirmPassword",
+                                {
+                                    required: true,
+                                    pattern: /^[a-z0-9_\-*]+$/i,
+                                    validate: (val: string) => {
+                                        if (watch('password') !== val) {
+                                            return "пароли не совпадают"
+                                        }
+                                    }
+                                })}
+                        />
                         {errors.confirmPassword && errors.confirmPassword.type === 'pattern' && (
                             <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
                                 Поле "Пароль" некорректно заполнено, доступы только не прописные английские буквы + <br />спец символы (_ , - , *).
@@ -180,6 +178,7 @@ export const Login: React.FC = () => {
                                 Пароли не совпадают.
                             </p>
                         )}
+                        <button type="submit">Регистрация</button>
                     </form>
 
                 </div>
@@ -200,19 +199,6 @@ export const Login: React.FC = () => {
                                     pattern: /^[A-Za-z0-9]+$/i
                                 })}
                         />
-                        <input
-                            type="text"
-                            className="p-2 w-100 mx-0 my-2"
-                            placeholder="Введите пароль"
-                            {...registerAuth(
-                                "passwordAuth",
-                                {
-                                    required: true,
-                                    pattern: /^[a-z0-9_\-*]+$/i
-                                })}
-                        />
-                        <button type="submit">Авторизоваться</button>
-
                         {errorsAuth.loginAuth && errorsAuth.loginAuth.type === 'minLength' && (
                             <p className="alert p-2 border-danger border border-4 rounded-2">
                                 Минимальная длина "Логина" 5 символов.
@@ -233,6 +219,19 @@ export const Login: React.FC = () => {
                                 Поле "Логин" обязательное.
                             </p>
                         )}
+
+                        <input
+                            type="text"
+                            className="p-2 w-100 mx-0 my-2"
+                            placeholder="Введите пароль"
+                            {...registerAuth(
+                                "passwordAuth",
+                                {
+                                    required: true,
+                                    pattern: /^[a-z0-9_\-*]+$/i
+                                })}
+
+                        />
                         {errorsAuth.passwordAuth && errorsAuth.passwordAuth.type === 'required' && (
                             <p className="alert my-2 p-2 border-danger border border-4 rounded-2">
                                 Поле "Пароль" обязательное.
@@ -243,7 +242,7 @@ export const Login: React.FC = () => {
                                 Поле "Пароль" некорректно заполнено, доступы только не прописные английские буквы + <br />спец символы (_ , - , *).
                             </p>
                         )}
-
+                        <button type="submit">Авторизоваться</button>
                     </form>
                 </div>
                 <div className="overlay-container right-panel-active">
