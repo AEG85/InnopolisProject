@@ -5,6 +5,9 @@ import useScript from './hooks/useScript';
 
 import { About, Place, Login, NotFound } from './pages'
 
+import { useWindowSize } from './hooks/useWindowSize'
+import { useDebounce } from './hooks/useDebounce'
+
 const ROUTES = {
   about: '/',
   place: '/place',
@@ -21,7 +24,12 @@ const footer = {
 
 function App() {
   useScript('https://cdn.jsdelivr.net/npm/chart.js')
-  
+  const windowSize = useWindowSize()
+  useDebounce(() => {
+    console.log(windowSize)
+  }, 2000, [windowSize])
+
+
   return (
     <>
       <div className="container-fluid bg-light position-relative shadow">
