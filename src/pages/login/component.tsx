@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { useForm } from 'react-hook-form';
 import { UserContext } from '../../contexts/userDetails';
+import { Switch } from '../../components/switch';
 import './styles.css';
 
 export const Login: React.FC = () => {
@@ -79,7 +80,8 @@ export const Login: React.FC = () => {
                 <div className={rightPanelActive} id="container">
                     <div className="row p-4">
                         <h5 className="mr-2">Логин: {username}</h5>
-                        <button className="ml-auto" type="submit" onClick={logOut}>Выйти</button>
+                        <h5 className="ml-auto mr-2" >Выйти</h5>
+                        <Switch action='logOut'></Switch>
                     </div>
 
                 </div>
