@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, Routes, Route, NavLink } from 'react-router-dom'
 import './assets/css/main-style.css'
 import useScript from './hooks/useScript';
-
+import { UserContext } from './contexts/userDetails';
 import { About, Place, Login, NotFound } from './pages'
-
 import { useWindowSize } from './hooks/useWindowSize'
 import { useDebounce } from './hooks/useDebounce'
+
 
 const ROUTES = {
   about: '/',
@@ -24,6 +24,8 @@ const footer = {
 
 function App() {
   useScript('https://cdn.jsdelivr.net/npm/chart.js')
+
+  const { username } = useContext(UserContext)
   const windowSize = useWindowSize()
   useDebounce(() => {
     console.log(windowSize)
@@ -67,7 +69,7 @@ function App() {
               <NavLink
                 to={ROUTES.login}
                 className="nav-item nav-link"
-              > Авторизация / Регистраци</NavLink>
+              > {(username) ? 'Логин: ' + username : 'Авторизация / Регистраци'} </NavLink>
             </div>
           </div>
         </nav>

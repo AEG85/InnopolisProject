@@ -1,0 +1,1 @@
+import SetUserDetails from "./component"
