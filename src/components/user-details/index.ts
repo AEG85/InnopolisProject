@@ -1,1 +1,0 @@
-import FetchUserDetails from "./component"

@@ -4,8 +4,7 @@ import './assets/css/main-style.css'
 import useScript from './hooks/useScript';
 import { UserContext } from './contexts/userDetails';
 import { About, Place, Login, NotFound } from './pages'
-import { useWindowSize } from './hooks/useWindowSize'
-import { useDebounce } from './hooks/useDebounce'
+
 
 
 const ROUTES = {
@@ -26,11 +25,6 @@ function App() {
   useScript('https://cdn.jsdelivr.net/npm/chart.js')
 
   const { username } = useContext(UserContext)
-  const windowSize = useWindowSize()
-  useDebounce(() => {
-    console.log(windowSize)
-  }, 2000, [windowSize])
-
 
   return (
     <>
